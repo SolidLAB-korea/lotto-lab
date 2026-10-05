@@ -1,0 +1,72 @@
+name: Update official draws and deploy Lotto Lab
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 13 * * 6'
+    - cron: '17 0 * * 0'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lotto-pages
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - name: Run logic checks
+        run: node tests/check.mjs
+      - name: Update official results
+        run: node scripts/update-data.mjs
+      - name: Validate complete dataset
+        run: node scripts/update-data.mjs --check
+      - name: Save verified data
+        env:
+          TARGET_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if ! git diff --quiet -- data/draws.json; then
+            git add data/draws.json
+            git commit -m 'data: update verified lottery results'
+            git push origin "HEAD:$TARGET_BRANCH"
+          fi
+          git fetch origin "$TARGET_BRANCH"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse FETCH_HEAD)"
+      - name: Prepare static site
+        run: |
+          mkdir -p _site/data
+          cp index.html styles.css app.mjs lotto.mjs _site/
+          cp data/draws.json _site/data/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

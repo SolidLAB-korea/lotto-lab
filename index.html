@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="전체 로또 당첨 통계를 살펴보고, 세 가지 방식으로 5게임을 생성하세요. 로그인 없이 기록과 당첨 결과를 확인할 수 있습니다.">
+  <title>로또 통계 연구소 · LOTTO LAB</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23d7fa65'/%3E%3Ctext x='11' y='29' font-size='27' font-family='sans-serif' font-weight='bold'%3EL%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#generator">번호 생성으로 이동</a>
+  <header class="site-header wrap">
+    <a class="brand" href="./"><span class="logo" aria-hidden="true">L<span>·</span></span><span>로또 통계 연구소<small>LOTTO LAB</small></span></a>
+    <nav aria-label="메인 메뉴"><a href="#statistics">번호 통계</a><a href="#history">내 기록 <span id="history-count">0</span></a></nav>
+    <span class="live"><i aria-hidden="true"></i> OFFICIAL DATA</span>
+  </header>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">A LITTLE DATA. A LITTLE LUCK.</p><h1 id="page-title">다음 여섯 개의 숫자,<br><span>당신의 방식으로.</span></h1><p class="intro-copy">지금까지의 당첨 기록을 살펴보고<br class="mobile-br"> 나만의 조합을 만들어 보세요.</p></div>
+      <aside class="latest panel" aria-labelledby="latest-title"><div class="section-top"><h2 id="latest-title">최근 추첨 결과</h2><span class="tag" id="latest-round">불러오는 중</span></div><div id="latest-balls" class="balls latest-balls"></div><div class="latest-bottom"><span id="latest-date">공식 결과를 확인하고 있어요</span><a href="https://www.dhlottery.co.kr/lt645/result" target="_blank" rel="noopener noreferrer">공식 결과 ↗</a></div></aside>
+    </section>
+
+    <div class="metrics" aria-label="데이터 요약"><div><span>분석한 추첨</span><strong id="draw-count">—</strong><small>전체 회차 기준</small></div><div><span>집계한 번호</span><strong id="number-count">—</strong><small>본 번호 + 보너스 번호</small></div><div><span>다음 조합의 회차</span><strong id="target-round">—</strong><small id="target-date">한국 시간 기준</small></div><div><span>데이터 갱신</span><strong class="date-value" id="updated-date">—</strong><small id="updated-time">마지막 수집 성공 시각</small></div></div>
+    <p id="data-status" class="data-status" role="status">공식 당첨 데이터를 불러오는 중입니다.</p>
+
+    <div class="workspace">
+      <section id="generator" class="panel generator" aria-labelledby="generator-title">
+        <div class="section-top"><div><p class="eyebrow">NUMBER GENERATOR</p><h2 id="generator-title">이번 주, 나의 5게임</h2></div><span class="tag green" id="generation-target">다음 회차</span></div>
+        <fieldset class="modes"><legend class="sr-only">번호 생성 방식</legend><label><input type="radio" name="mode" value="hot" checked><span>많이 나온 번호</span></label><label><input type="radio" name="mode" value="cold"><span>적게 나온 번호</span></label><label><input type="radio" name="mode" value="random"><span>완전 무작위</span></label></fieldset>
+        <p id="mode-description" class="mode-description">전체 회차에서 자주 등장한 번호에 조금 더 비중을 둡니다.</p>
+        <div id="games" class="games"><div class="empty-games"><div class="placeholder-balls" aria-hidden="true"><span>?</span><span>?</span><span>?</span><span>?</span><span>?</span><span>?</span></div><p>아직 쓰이지 않은 나의 다섯 줄</p><small>아래 버튼으로 첫 조합을 만들어 보세요.</small></div></div>
+        <button id="generate" class="primary" disabled><span aria-hidden="true">✦</span> 5게임 생성하기 <span class="button-arrow" aria-hidden="true">↗</span></button>
+        <p id="generation-status" class="generation-status" role="status" aria-live="polite">한 게임에 번호 6개 · 같은 조합 없이 5게임</p>
+      </section>
+      <aside class="insights" aria-label="번호 통계 요약">
+        <section class="panel ranking"><div class="section-top"><h2>자주 등장한 번호</h2><span class="tiny-label lime">MOST DRAWN</span></div><p>전체 회차 출현 횟수 TOP 5</p><ol id="hot-list" class="rank-list"></ol></section>
+        <section class="panel ranking"><div class="section-top"><h2>드물게 등장한 번호</h2><span class="tiny-label purple">LEAST DRAWN</span></div><p>전체 회차 출현 횟수 BOTTOM 5</p><ol id="cold-list" class="rank-list"></ol></section>
+      </aside>
+    </div>
+    <p class="probability-note"><span aria-hidden="true">ⓘ</span> 과거 출현 통계는 다음 회차 당첨 확률을 높여주지 않습니다.</p>
+
+    <section id="statistics" class="panel statistics" aria-labelledby="statistics-title"><div class="section-top"><div><p class="eyebrow">THE BIG PICTURE</p><h2 id="statistics-title">45개 번호, 지금까지의 기록</h2></div><span class="tag">전체 회차 · 보너스 포함</span></div><p class="section-copy">번호별 누적 출현 횟수입니다. 막대 아래에서 번호와 횟수를 확인하세요.</p><div class="chart-scroll" tabindex="0" role="region" aria-label="번호 1부터 45까지 출현 빈도 차트. 좁은 화면에서는 가로로 이동할 수 있습니다."><div id="frequency-chart" class="chart"></div></div><div class="chart-key"><span><i class="key-lime"></i> 상위 5개 번호</span><span><i class="key-purple"></i> 하위 5개 번호</span><span>같은 횟수는 번호순으로 정렬</span></div></section>
+
+    <section id="history" class="panel history" aria-labelledby="history-title"><div class="section-top"><div><p class="eyebrow">YOUR COLLECTION</p><h2 id="history-title">내 조합 기록</h2></div><button id="clear-history" class="secondary" disabled>전체 삭제</button></div><p class="section-copy">이 브라우저에 저장됩니다. 추첨 결과가 갱신되면 해당 회차와 자동으로 비교합니다.</p><p id="history-status" role="status" class="history-status"></p><button id="reset-history" class="secondary" hidden>저장 기록 초기화</button><div id="history-list"><div class="empty-history">아직 저장한 조합이 없어요.<span>첫 5게임을 생성하면 여기에 기록됩니다.</span></div></div></section>
+  </main>
+  <footer class="wrap"><span class="footer-brand">LOTTO LAB<span> 숫자를 살피는 작은 연구소</span></span><p>기록은 같은 브라우저에서만 유지되며, 브라우저 데이터 삭제 시 사라질 수 있습니다.<br>비교 결과는 참고용입니다. 실제 복권은 동행복권 공식 결과와 대조해 주세요.</p><a href="https://www.dhlottery.co.kr/lt645/intro" target="_blank" rel="noopener noreferrer">데이터 출처: 동행복권 ↗</a></footer>
+</body>
+</html>

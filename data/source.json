@@ -1,0 +1,11 @@
+{
+  "latestUrl": "https://www.dhlottery.co.kr/lt645/selectPstLt645Info.do",
+  "batchUrl": "https://www.dhlottery.co.kr/lt645/selectPstLt645InfoNew.do",
+  "schedule": {
+    "anchorRound": 1,
+    "anchorDrawAt": "2002-12-07T20:35:00+09:00",
+    "periodDays": 7
+  },
+  "scheduleSource": "https://www.dhlottery.co.kr/lt645/intro",
+  "scheduleNote": "매주 토요일 20:35경의 공식 예정 시각. 방송 사정에 따른 변동 가능. 첫 회차 날짜는 공식 결과로 확인."
+}
