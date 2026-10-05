@@ -34,6 +34,57 @@ export function saveHistory(storage,records,expectedRecords) {
   storage.setItem(HISTORY_KEY,JSON.stringify({schemaVersion:1,records}));
 }
 
+export function historyResultLabel(game,draw,dataAvailable) {
+  if(!draw) return dataAvailable?'추첨 결과 대기':'당첨 데이터 확인 불가';
+  const result=rankGame(game,draw);
+  return `${result.rank?`${result.rank}등`:'미당첨'} · 본 번호 ${result.matches}개 일치${result.bonusMatch?' · 보너스 일치':''}`;
+}
+
+async function saveRecordImage(record,draw,dataAvailable) {
+  validateRecords([record]);
+  await document.fonts.ready;
+  const canvas=document.createElement('canvas');canvas.width=900;canvas.height=980;
+  const ctx=canvas.getContext('2d');
+  if(!ctx)throw new Error('이 브라우저에서 이미지 저장을 지원하지 않습니다.');
+  const font='"Segoe UI", "Malgun Gothic", sans-serif';
+  function text(value,x,y,size,color='#f2f3f5',weight=400) {
+    ctx.font=`${weight} ${size}px ${font}`;ctx.fillStyle=color;ctx.fillText(value,x,y);
+  }
+  ctx.fillStyle='#101114';ctx.fillRect(0,0,900,980);
+  text('LOTTO LAB · 로또 통계 연구소',48,65,22,'#d7fa65',700);
+  text(`${record.targetRound}회 · 내 조합 기록`,48,124,36,'#f2f3f5',700);
+  const created=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(record.createdAt));
+  text(`${modes[record.mode]}  |  생성 ${created} KST`,48,164,19,'#a1a4af');
+  const colors=[['#58492a','#ffe095'],['#243e5b','#95c6ff'],['#563039','#ffaab7'],['#3e4049','#d3d5dd'],['#2c463a','#9adebb']];
+  for(const [i,game] of record.games.entries()) {
+    const y=208+i*126;
+    ctx.fillStyle='#202127';ctx.beginPath();ctx.roundRect(48,y,804,112,12);ctx.fill();
+    text(String.fromCharCode(65+i),70,y+49,21,'#a1a4af',700);
+    for(const [j,number] of game.entries()) {
+      const x=160+j*120,cy=y+40;
+      const [background,foreground]=colors[Math.min(4,Math.ceil(number/10)-1)];
+      ctx.beginPath();ctx.arc(x,cy,27,0,Math.PI*2);ctx.fillStyle=background;ctx.fill();
+      if(draw?.numbers.includes(number) || draw?.bonus===number) {
+        ctx.strokeStyle=draw.numbers.includes(number)?'#d7fa65':'#b7a1ff';ctx.lineWidth=3;
+        ctx.setLineDash(draw.numbers.includes(number)?[]:[5,4]);ctx.stroke();ctx.setLineDash([]);
+      }
+      ctx.textAlign='center';text(number,x,cy+8,23,foreground,700);ctx.textAlign='left';
+    }
+    text(historyResultLabel(game,draw,dataAvailable),122,y+92,18,'#c5c8d2');
+  }
+  if(draw)text(`추첨일 ${draw.date} · 테두리: 본 번호 일치 / 점선: 보너스 일치`,48,872,17,'#a1a4af');
+  text('과거 출현 통계는 다음 회차 당첨 확률을 높여주지 않습니다.',48,923,18,'#a1a4af');
+  text('비교 결과는 참고용입니다. 실제 복권은 공식 결과와 대조해 주세요.',48,953,17,'#a1a4af');
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  if(!blob)throw new Error('이미지를 만들지 못했습니다. 다시 시도해 주세요.');
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');link.href=url;
+  const stamp=record.createdAt.replace(/[^0-9]/g,'').slice(0,14);
+  link.download=`lotto-${record.targetRound}-${stamp}.png`;
+  document.body.append(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
 if(typeof document!=='undefined') initialize();
 
 async function initialize() {
@@ -70,16 +121,23 @@ async function initialize() {
       const remove=el('button','secondary','삭제');remove.type='button';remove.disabled=storageBlocked;
       remove.setAttribute('aria-label',`${record.targetRound}회 ${time.textContent} 생성 기록 삭제`);
       remove.addEventListener('click',()=>persist(records.filter(r=>r.id!==record.id)));
-      head.append(el('strong','',`${record.targetRound}회`),el('span','tag',modes[record.mode]),time,remove);entry.append(head);
+      const saveImage=el('button','secondary','이미지 저장');saveImage.type='button';
+      saveImage.setAttribute('aria-label',`${record.targetRound}회 ${time.textContent} 생성 기록 이미지 저장`);
+      saveImage.addEventListener('click',async()=>{
+        saveImage.disabled=true;
+        try {
+          await saveRecordImage(record,dataset?.draws.find(d=>d.round===record.targetRound),!!dataset);
+          $('history-status').textContent='PNG 이미지 다운로드를 요청했습니다.';
+        }catch(error){$('history-status').textContent=`이미지 저장 실패: ${error.message}`;}
+        finally{saveImage.disabled=false;}
+      });
+      const actions=el('div','history-actions');actions.append(saveImage,remove);
+      head.append(el('strong','',`${record.targetRound}회`),el('span','tag',modes[record.mode]),time,actions);entry.append(head);
       const draw=dataset?.draws.find(d=>d.round===record.targetRound);
       for(const [i,game] of record.games.entries()) {
         const row=el('div','history-game');row.append(el('span','game-label',String.fromCharCode(65+i)),balls(game,draw));
-        let label=dataset?'추첨 결과 대기':'당첨 데이터 확인 불가';
-        let rank;
-        if(draw) {
-          const result=rankGame(game,draw);rank=result.rank;
-          label=`${rank?`${rank}등`:'미당첨'} · 본 번호 ${result.matches}개 일치${result.bonusMatch?' · 보너스 일치':''}`;
-        }
+        const label=historyResultLabel(game,draw,!!dataset);
+        const rank=draw && rankGame(game,draw).rank;
         row.append(el('span',`result-label${rank?' winner':''}`,label));entry.append(row);
       }
       if(draw)entry.append(el('p','entry-note','테두리 표시: 본 번호 일치 · 점선 표시: 보너스 번호 일치'));

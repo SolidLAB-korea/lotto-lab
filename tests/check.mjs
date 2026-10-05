@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { validateDataset, countNumbers, weightsFor, generateGames, targetRound, rankGame } from '../lotto.mjs';
 import { updateData } from '../scripts/update-data.mjs';
-import { readHistory, saveHistory } from '../app.mjs';
+import { readHistory, saveHistory, historyResultLabel } from '../app.mjs';
 
 const schedule = { anchorRound: 1, anchorDrawAt: '2002-12-07T20:35:00+09:00', periodDays: 7 };
 const draws = [
@@ -111,3 +111,9 @@ const concurrentValue=stored;
 assert.throws(()=>saveHistory(storage,[],original),/다른 탭/);
 assert.equal(stored,concurrentValue);
 console.log('PASS: browser history validation, corrupt data preservation and quota errors');
+assert.equal(historyResultLabel(draws[0].numbers,draws[0],true),'1등 · 본 번호 6개 일치');
+assert.equal(historyResultLabel([10,23,29,33,37,16],draws[0],true),'2등 · 본 번호 5개 일치 · 보너스 일치');
+assert.equal(historyResultLabel([1,2,3,4,5,6],draws[0],true),'미당첨 · 본 번호 0개 일치');
+assert.equal(historyResultLabel(draws[0].numbers,undefined,true),'추첨 결과 대기');
+assert.equal(historyResultLabel(draws[0].numbers,undefined,false),'당첨 데이터 확인 불가');
+console.log('PASS: shared history and image result labels');
