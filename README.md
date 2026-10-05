@@ -66,4 +66,8 @@ node scripts/update-data.mjs
 - 매주 예약 실행은 설정했으며 실제 예약 시각의 실행은 아직 확인하지 않았습니다. 공식 사이트 오류 시 기존 데이터 보존은 로컬 검사로 검증했으며 운영 사이트를 의도적으로 실패시키는 실험은 수행하지 않았습니다.
 
 기록을 생성한 localhost 주소와 공개 사이트 주소는 별도 저장 공간을 사용합니다.
-`n## 검색·AI 인용 기반`n정적 통계·FAQ·메타·사이트맵·llms.txt는 `node scripts/build-seo.mjs`로 생성합니다. `node tests/seo-check.mjs`로 검사합니다. 배포 시 최신 공식 결과로 재생성하므로 HTML 통계가 갱신됩니다. 등록·측정 안내는 [docs/seo/registration-and-measurement.md](docs/seo/registration-and-measurement.md)를 확인하세요. 검색 순위·색인·AI 인용 성과는 아직 미측정입니다.
+
+## 검색·AI 인용 기반
+정적 통계·FAQ·메타·사이트맵·llms.txt는 
+ode scripts/build-seo.mjs`로 생성합니다. 
+ode tests/seo-check.mjs`로 검사합니다. 배포 시 최신 공식 결과로 재생성하므로 HTML 통계가 갱신됩니다. 등록·측정 안내는 [docs/seo/registration-and-measurement.md](docs/seo/registration-and-measurement.md)를 확인하세요. 검색 순위·색인·AI 인용 성과는 아직 미측정입니다.
