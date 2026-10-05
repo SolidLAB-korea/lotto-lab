@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+const output=resolve(process.argv[2]??'.');
+const site=JSON.parse(await readFile('data/site.json','utf8'));
+const data=JSON.parse(await readFile('data/draws.json','utf8'));
+const html=await readFile(resolve(output,'index.html'),'utf8');
+const schema=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+assert.equal((html.match(/<h1\b/g)||[]).length,1);
+assert(!/noindex/i.test(html));
+assert(html.includes(`<link rel="canonical" href="${site.url}">`));
+assert(html.includes(`${data.draws.at(-1).round}회까지`));
+assert(html.includes(data.draws.at(-1).numbers.join(', ')));
+assert.deepEqual(schema['@graph'].find(n=>n['@type']==='FAQPage').mainEntity.map(q=>({question:q.name,answer:q.acceptedAnswer.text})),site.faq);
+for(const f of site.faq) assert(html.includes(f.question)&&html.includes(f.answer));
+assert((await readFile(resolve(output,'sitemap.xml'),'utf8')).includes(`<loc>${site.url}</loc>`));
+assert((await readFile(resolve(output,'llms.txt'),'utf8')).includes(data.draws.at(-1).date));
+console.log('PASS: crawler HTML, canonical, latest statistics, matching FAQ schema, sitemap and llms');

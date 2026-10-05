@@ -53,6 +53,8 @@ jobs:
           mkdir -p _site/data
           cp index.html styles.css app.mjs lotto.mjs _site/
           cp data/draws.json _site/data/
+          node scripts/build-seo.mjs _site
+          node tests/seo-check.mjs _site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

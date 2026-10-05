@@ -1,0 +1,17 @@
+# 로또 통계 연구소
+
+> 동행복권 공식 결과를 자체 집계하는 로또 6/45 번호 생성기입니다.
+
+## 페이지
+- [번호 생성기·통계·FAQ](https://solidlab-korea.github.io/lotto-lab/): 세 가지 방식의 5게임 생성, 브라우저 기록, PNG 저장
+- [전체 회차 데이터](https://solidlab-korea.github.io/lotto-lab/data/draws.json): 추첨 결과 JSON
+- [공개 소스와 문의](https://github.com/SolidLAB-korea/lotto-lab)
+
+## 데이터 정책
+- 원출처: https://www.dhlottery.co.kr/lt645/result
+- 자체 산출: 본 번호와 보너스 번호를 함께 센 누적 출현 횟수
+- 기준: 2026-10-03, 1244회까지
+- 공식 결과 갱신을 매주 토요일 밤·일요일 오전에 시도하며 검증 실패 시 이전 데이터를 유지합니다.
+- 과거 통계는 다음 회차 당첨 확률을 높이지 않습니다.
+- 개인정보나 개인 조합 기록은 공개 데이터에 포함되지 않습니다.
+- 프로젝트 경로의 안내 파일입니다. AI 인용을 보장하지 않습니다.
