@@ -68,6 +68,5 @@ node scripts/update-data.mjs
 기록을 생성한 localhost 주소와 공개 사이트 주소는 별도 저장 공간을 사용합니다.
 
 ## 검색·AI 인용 기반
-정적 통계·FAQ·메타·사이트맵·llms.txt는 
-ode scripts/build-seo.mjs`로 생성합니다. 
-ode tests/seo-check.mjs`로 검사합니다. 배포 시 최신 공식 결과로 재생성하므로 HTML 통계가 갱신됩니다. 등록·측정 안내는 [docs/seo/registration-and-measurement.md](docs/seo/registration-and-measurement.md)를 확인하세요. 검색 순위·색인·AI 인용 성과는 아직 미측정입니다.
+
+정적 통계·FAQ·메타·사이트맵·llms.txt는 `node scripts/build-seo.mjs`로 생성합니다. `node tests/seo-check.mjs`로 검사합니다. 배포 시 최신 공식 결과로 재생성합니다. 등록·측정 안내는 [docs/seo/registration-and-measurement.md](docs/seo/registration-and-measurement.md)를 확인하세요. 검색 순위·색인·AI 인용 성과는 아직 미측정입니다.
