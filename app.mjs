@@ -96,11 +96,20 @@ async function initialize() {
   }
   try {records=readHistory(localStorage);}catch(error){storageError(error);}
   renderHistory();
-  $('clear-history').addEventListener('click',()=>{
-    if(confirm('이 브라우저에 저장한 모든 조합을 삭제할까요? 삭제한 기록은 복구할 수 없습니다.'))persist([]);
+  function confirmDelete(message) {
+    const dialog=$('delete-dialog');
+    $('delete-message').textContent=message;
+    dialog.returnValue='cancel';
+    return new Promise(resolve=>{
+      dialog.addEventListener('close',()=>resolve(dialog.returnValue==='delete'),{once:true});
+      dialog.showModal();
+    });
+  }
+  $('clear-history').addEventListener('click',async()=>{
+    if(await confirmDelete('이 브라우저에 저장한 모든 조합을 삭제합니다. 삭제한 기록은 복구할 수 없습니다.'))persist([]);
   });
-  $('reset-history').addEventListener('click',()=>{
-    if(!confirm('기존 저장 기록을 초기화할까요? 삭제한 기록은 복구할 수 없습니다.'))return;
+  $('reset-history').addEventListener('click',async()=>{
+    if(!await confirmDelete('기존 저장 기록을 초기화합니다. 삭제한 기록은 복구할 수 없습니다.'))return;
     try{localStorage.removeItem(HISTORY_KEY);records=[];storageBlocked=false;$('reset-history').hidden=true;$('history-status').textContent='저장 기록을 초기화했습니다.';renderHistory();}
     catch(error){storageError(error);}
   });

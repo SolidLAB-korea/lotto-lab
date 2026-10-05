@@ -13,3 +13,7 @@
 - Final: fixed 다른 탭의 저장 배열 덮어쓰기 — 충돌 검사 RED→GREEN, 전체 검사 통과. 저장·삭제 공통 경로에서 현재 기록과 처음 읽은 기록을 비교한다.
 - Final: minor (deferred): source.json 변경만으로 기존 일정 자동 이전되지 않음. README에 draws.json 메타데이터 수동 수정 방법과 한계를 명시.
 - Task 4: 사용자가 SolidLAB-korea/lotto-lab 공개 저장소 신규 생성을 선택했다. 저장된 Git 인증을 Git credential manager로 확인했으며 계정 일치. 토큰 출력·파일 저장 없음.
+- 초기 Git 쓰기 제한은 require_escalated로 승인받아 해결. codex/lotto-lab 브랜치에서 최초 커밋 cfffde2 작성 및 승인된 공개 저장소 push 완료.
+- Task 3: complete — PC/모바일 생성, 기록 유지, 공개 주소의 두 탭 충돌 차단과 개별 삭제 확인. 테스트용 별도 주소에서 1~5등·대기 표시 확인. native confirm 자동화가 막혀 기본 HTML dialog로 변경하고 취소 후 2건 보존, 승인 후 0건, 재로딩 후 0건 확인.
+- Task 4: 배포 완료 — 공개 https://solidlab-korea.github.io/lotto-lab/ . 최초 push run 37303224723 성공, 수동 37303530202와 37303545230 모두 성공. 두 번째 실행 pending으로 직렬화 확인. 예약 실행은 설정 완료, 실제 예약 시각 실행 미확인.
+- Final: native HTML dialog 수정 후 전체 Node 검사 통과. 공개 화면 증빙 이미지는 Codex visualization 폴더에 보관하며 저장소에 넣지 않음.

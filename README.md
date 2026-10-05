@@ -56,7 +56,11 @@ node scripts/update-data.mjs
 
 - 실제 공식 사이트 수집: 성공, 1~1244회 연속 데이터.
 - Node 검사: 데이터 경계, 안전한 갱신, 통계·가중치·게임 중복 방지, 등수, 추첨 시각 경계, 손상 기록 보존과 저장 공간 오류 확인.
-- 실제 브라우저: 세 방식 생성, 새로고침 후 기록 유지, 1440px PC 및 390px 모바일 화면 확인.
-- 공개 배포 URL, GitHub runner 수집, 예약 실행과 실행 중첩: 저장소 연결 전이므로 미확인.
+- 실제 브라우저: 세 방식 생성, 새로고침 후 기록 유지, 1440px PC 및 390px 모바일 화면, 개별 삭제, 전체 삭제 확인·취소, 서로 다른 탭의 기록 충돌 방지 확인. 분리된 로컬 검사 주소에서 1~5등과 추첨 대기 화면을 확인했습니다.
+- 공개 주소: https://solidlab-korea.github.io/lotto-lab/
+- 저장소: https://github.com/SolidLAB-korea/lotto-lab (기본 브랜치 `codex/lotto-lab`).
+- GitHub runner 공식 사이트 수집·검사·Pages 배포 성공. 공개 사이트에서 최신 회차 표시, 생성, 저장, 두 탭 충돌 차단과 개별 삭제 확인.
+- 수동 실행 2건을 연속 요청해 두 번째 실행의 대기 상태와 두 건의 성공을 확인했습니다. 실행 기록: [최초 배포](https://github.com/SolidLAB-korea/lotto-lab/actions/runs/37303224723), [첫 수동 실행](https://github.com/SolidLAB-korea/lotto-lab/actions/runs/37303530202), [두 번째 수동 실행](https://github.com/SolidLAB-korea/lotto-lab/actions/runs/37303545230).
+- 매주 예약 실행은 설정했으며 실제 예약 시각의 실행은 아직 확인하지 않았습니다. 공식 사이트 오류 시 기존 데이터 보존은 로컬 검사로 검증했으며 운영 사이트를 의도적으로 실패시키는 실험은 수행하지 않았습니다.
 
-공개 운영이 연결되면 마지막 항목을 실제 실행 결과로 갱신합니다.
+기록을 생성한 localhost 주소와 공개 사이트 주소는 별도 저장 공간을 사용합니다.
