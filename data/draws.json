@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-05T11:11:11.731Z",
+  "updatedAt": "2026-10-10T17:51:28.991Z",
   "schedule": {
     "anchorRound": 1,
     "anchorDrawAt": "2002-12-07T20:35:00+09:00",
@@ -16178,6 +16178,19 @@
         38
       ],
       "bonus": 25
+    },
+    {
+      "round": 1245,
+      "date": "2026-10-10",
+      "numbers": [
+        4,
+        5,
+        25,
+        28,
+        32,
+        42
+      ],
+      "bonus": 12
     }
   ]
 }
